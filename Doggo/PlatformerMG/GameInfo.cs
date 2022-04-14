@@ -14,6 +14,7 @@ namespace PlatformerMG
 
     public class GemInfo
     {
+        public string Texture;
         public float BounceHeight = 0.0f;
         public float BounceRate = 0.0f;
         public Color Color;
@@ -36,6 +37,6 @@ namespace PlatformerMG
         }
 
         public EnemyInfo EnemyInfo;
-        public GemInfo GemInfo;
+        public GemInfo gemInfo;
     }
 }

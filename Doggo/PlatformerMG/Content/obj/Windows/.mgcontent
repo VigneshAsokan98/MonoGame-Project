@@ -28,6 +28,7 @@
     <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Overlays/you_lose.png</File>
     <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Overlays/you_win.png</File>
     <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Sprites/fish.png</File>
+    <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Sprites/milk.png</File>
     <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Sprites/MonsterA/Idle.png</File>
     <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Sprites/MonsterA/Run.png</File>
     <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Sprites/MonsterB/Idle.png</File>
@@ -47,6 +48,7 @@
     <File>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Tiles/Platform.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

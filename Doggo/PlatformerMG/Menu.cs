@@ -11,7 +11,7 @@ namespace PlatformerMG
     class Menu 
     {
         ContentManager content;
-        public bool isPlaySelected = false;
+        public bool isPlaySelected = true;
 
         GraphicsDevice Device;
 

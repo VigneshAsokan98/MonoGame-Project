@@ -157,3 +157,4 @@ D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcore
 D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Backgrounds\GameOver.xnb
 D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Backgrounds\Menu\Exit.xnb
 D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Backgrounds\Menu\Play.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\milk.xnb

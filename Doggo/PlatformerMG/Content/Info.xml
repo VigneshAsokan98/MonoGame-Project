@@ -4,7 +4,8 @@
     <Speed>300</Speed>    
   </EnemyInfo> 
 
-  <GemInfo>
+  <gemInfo>
+    <Texture>Sprites/fish</Texture>
     <BounceHeight>0.18</BounceHeight>
     <BounceRate>3.0</BounceRate>
     <Size>0.5</Size>
@@ -15,6 +16,6 @@
       <B>255</B>
       <A>255</A>
     </Color>
-  </GemInfo>
+  </gemInfo>
   
 </GameInfo>

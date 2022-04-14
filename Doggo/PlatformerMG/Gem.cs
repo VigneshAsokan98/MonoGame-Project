@@ -74,7 +74,7 @@ namespace PlatformerMG
         /// </summary>
         public void LoadContent()
         {
-            texture = Level.Content.Load<Texture2D>("Sprites/fish");
+            texture = Level.Content.Load<Texture2D>(GameInfo.Instance.gemInfo.Texture);
             origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
             //collectedSound = Level.Content.Load<SoundEffect>("Sounds/GemCollected");
         }
@@ -87,8 +87,8 @@ namespace PlatformerMG
             // Bounce control constants
             //const float BounceHeight = 0.18f;
            // const float BounceRate = 3.0f;
-            float BounceHeight = GameInfo.Instance.GemInfo.BounceHeight;
-            float BounceRate = GameInfo.Instance.GemInfo.BounceRate;
+            float BounceHeight = GameInfo.Instance.gemInfo.BounceHeight;
+            float BounceRate = GameInfo.Instance.gemInfo.BounceRate;
             const float BounceSync = -0.75f;
 
             // Bounce along a sine curve over time.
@@ -114,7 +114,7 @@ namespace PlatformerMG
         /// </summary>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Position, null, GameInfo.Instance.GemInfo.Color, 0.0f, origin, GameInfo.Instance.GemInfo.Size, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(texture, Position, null, GameInfo.Instance.gemInfo.Color, 0.0f, origin, GameInfo.Instance.gemInfo.Size, SpriteEffects.None, 0.0f);
         }
     }
 }
