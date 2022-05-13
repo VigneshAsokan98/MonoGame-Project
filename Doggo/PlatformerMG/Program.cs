@@ -9,7 +9,7 @@
 
 using System;
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     static class Program
     {

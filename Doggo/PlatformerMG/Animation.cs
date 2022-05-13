@@ -10,7 +10,7 @@
 using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     /// <summary>
     /// Represents an animated texture.

@@ -9,7 +9,7 @@
 
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     /// <summary>
     /// Provides extension methods for the TouchCollection type.

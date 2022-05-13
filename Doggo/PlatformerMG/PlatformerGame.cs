@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
 
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     /// <summary>
     /// This is the main type for your game
@@ -68,11 +68,12 @@ namespace PlatformerMG
         // or handle exceptions, both of which can add unnecessary time to level loading.
         private const int numberOfLevels = 4;
 
+        CommandManager commandManager;
         public PlatformerGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
+            //commandManager = new CommandManager();
 #if WINDOWS_PHONE
             graphics.IsFullScreen = true;
             TargetElapsedTime = TimeSpan.FromTicks(333333);
@@ -113,7 +114,10 @@ namespace PlatformerMG
             LoadGameStates();
             //LoadNextLevel();
         }
-
+        protected override void Initialize()
+        {
+            base.Initialize();
+        }
         private void LoadGameStates()
         {
             //Load Menu
@@ -121,6 +125,17 @@ namespace PlatformerMG
 
             gameover = new GameOver(Services, GraphicsDevice);
         }
+
+        private void InitializeKeyBindings()
+        {
+            commandManager = new CommandManager();
+            commandManager.AddKeyboardBinding(Keys.Escape, StopGame);
+            //commandManager.AddKeyboardBinding(Keys.C, EnableCameraSpring);
+            commandManager.AddKeyboardBinding(Keys.W, level.Player.Jump);
+            commandManager.AddKeyboardBinding(Keys.A, level.Player.TurnLeft);
+            commandManager.AddKeyboardBinding(Keys.D, level.Player.TurnRight);
+        }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -144,6 +159,8 @@ namespace PlatformerMG
         }
         protected override void Update(GameTime gameTime)
         {
+            if(commandManager != null)
+                commandManager.Update();
             // Handle polling for our input and handling high-level input
             HandleInput();
             switch (CurrentGameState)
@@ -225,6 +242,8 @@ namespace PlatformerMG
             string levelPath = string.Format("Content/Levels/{0}.txt", levelIndex);
             using (Stream fileStream = TitleContainer.OpenStream(levelPath))
                 level = new Level(Services, fileStream, levelIndex);
+
+            InitializeKeyBindings();
         }
 
         private void ReloadCurrentLevel()
@@ -321,7 +340,13 @@ namespace PlatformerMG
                 spriteBatch.Draw(status, center - statusSize / 2, Color.White);
             }
         }
-
+        public void StopGame(eButtonState buttonState)
+        {
+            if (buttonState == eButtonState.DOWN)
+            {
+                Exit();
+            }
+        }
         private void DrawShadowedString(SpriteFont font, string value, Vector2 position, Color color)
         {
             spriteBatch.DrawString(font, value, position + new Vector2(1.0f, 1.0f), Color.Black);

@@ -11,7 +11,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     /// <summary>
     /// Controls playback of an Animation.

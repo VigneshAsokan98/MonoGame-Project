@@ -14,12 +14,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     /// <summary>
     /// Our fearless adventurer!
     /// </summary>
-    class Player
+    public class Player
     {
         // Animations
         private Animation idleAnimation;
@@ -179,7 +179,7 @@ namespace PlatformerMG
             AccelerometerState accelState,
             DisplayOrientation orientation)
         {
-            GetInput(keyboardState, gamePadState, touchState, accelState, orientation);
+            //GetInput(keyboardState, gamePadState, touchState, accelState, orientation);
 
             ApplyPhysics(gameTime);
 
@@ -228,29 +228,47 @@ namespace PlatformerMG
                     movement = -movement;
             }
 
-            // If any digital horizontal movement input is found, override the analog movement.
-            if (gamePadState.IsButtonDown(Buttons.DPadLeft) ||
-                keyboardState.IsKeyDown(Keys.Left) ||
-                keyboardState.IsKeyDown(Keys.A))
+            //// If any digital horizontal movement input is found, override the analog movement.
+            //if (gamePadState.IsButtonDown(Buttons.DPadLeft) ||
+            //    keyboardState.IsKeyDown(Keys.Left) ||
+            //    keyboardState.IsKeyDown(Keys.A))
+            //{
+            //    movement = -1.0f;
+            //}
+            //else if (gamePadState.IsButtonDown(Buttons.DPadRight) ||
+            //         keyboardState.IsKeyDown(Keys.Right) ||
+            //         keyboardState.IsKeyDown(Keys.D))
+            //{
+            //    movement = 1.0f;
+            //}
+
+            ////Check if the player wants to jump.
+            //isJumping =
+            //    gamePadState.IsButtonDown(JumpButton) ||
+            //    keyboardState.IsKeyDown(Keys.Space) ||
+            //    keyboardState.IsKeyDown(Keys.Up) ||
+            //    keyboardState.IsKeyDown(Keys.W) ||
+            //    touchState.AnyTouch();
+        }
+        public void TurnLeft(eButtonState buttonState)
+        {
+            if (buttonState == eButtonState.DOWN)
             {
                 movement = -1.0f;
             }
-            else if (gamePadState.IsButtonDown(Buttons.DPadRight) ||
-                     keyboardState.IsKeyDown(Keys.Right) ||
-                     keyboardState.IsKeyDown(Keys.D))
+        }
+
+        public void TurnRight(eButtonState buttonState)
+        {
+            if (buttonState == eButtonState.DOWN)
             {
                 movement = 1.0f;
             }
-
-            // Check if the player wants to jump.
-            isJumping =
-                gamePadState.IsButtonDown(JumpButton) ||
-                keyboardState.IsKeyDown(Keys.Space) ||
-                keyboardState.IsKeyDown(Keys.Up) ||
-                keyboardState.IsKeyDown(Keys.W) ||
-                touchState.AnyTouch();
         }
-
+        public void Jump(eButtonState buttonState)
+        {
+            isJumping = true;
+        }
         /// <summary>
         /// Updates the player's velocity and position based on input, gravity, etc.
         /// </summary>

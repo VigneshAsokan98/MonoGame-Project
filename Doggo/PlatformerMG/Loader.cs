@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Serialization;
 
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     class Loader
     {

@@ -10,7 +10,7 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace PlatformerMG
+namespace Catastrophe
 {
     /// <summary>
     /// A set of helpful methods for working with rectangles.
