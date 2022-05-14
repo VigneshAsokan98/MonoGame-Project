@@ -101,6 +101,13 @@ namespace Catastrophe
         private float jumpTime;
 
         private Rectangle localBounds;
+        private float powerUpTimer; 
+        public bool _IsShieldOn { get { return isShieldOn; } }
+        private bool isShieldOn = false;
+        private bool isSpeedOn = false;
+        private float speed=1;
+        private Texture2D Shieldtexture;
+
         /// <summary>
         /// Gets a rectangle which bounds this player in world space.
         /// </summary>
@@ -138,6 +145,7 @@ namespace Catastrophe
             celebrateAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Attack"), 0.1f, false);
             dieAnimation = new Animation(Level.Content.Load<Texture2D>("Sprites/Player/Death"), 0.1f, false);
 
+            Shieldtexture = Level.Content.Load<Texture2D>("Sprites/Shield");
             // Calculate bounds within texture size.            
             int width = (int)(idleAnimation.FrameWidth * 0.4);
             int left = (idleAnimation.FrameWidth - width) / 2;
@@ -179,6 +187,19 @@ namespace Catastrophe
             AccelerometerState accelState,
             DisplayOrientation orientation)
         {
+            if (powerUpTimer > 0)
+            {
+                powerUpTimer -= 0.02f;
+            }
+            if (isSpeedOn)
+                speed = 2;
+            if (powerUpTimer <= 0)
+            {
+                powerUpTimer = 0;
+                isSpeedOn = false;
+                isShieldOn = false;
+
+            }
             //GetInput(keyboardState, gamePadState, touchState, accelState, orientation);
 
             ApplyPhysics(gameTime);
@@ -194,11 +215,11 @@ namespace Catastrophe
                     sprite.PlayAnimation(idleAnimation);
                 }
             }
-
             // Clear input.
             movement = 0.0f;
             isJumping = false;
         }
+
 
         /// <summary>
         /// Gets player horizontal movement and jump commands from input.
@@ -254,7 +275,7 @@ namespace Catastrophe
         {
             if (buttonState == eButtonState.DOWN)
             {
-                movement = -1.0f;
+                movement = -1.0f * speed;
             }
         }
 
@@ -262,12 +283,15 @@ namespace Catastrophe
         {
             if (buttonState == eButtonState.DOWN)
             {
-                movement = 1.0f;
+                movement = 1.0f * speed;
             }
         }
         public void Jump(eButtonState buttonState)
         {
-            isJumping = true;
+            if (buttonState == eButtonState.DOWN)
+            {
+                isJumping = true;
+            }
         }
         /// <summary>
         /// Updates the player's velocity and position based on input, gravity, etc.
@@ -308,6 +332,7 @@ namespace Catastrophe
             if (Position.Y == previousPosition.Y)
                 velocity.Y = 0;
         }
+
 
         /// <summary>
         /// Calculates the Y velocity accounting for jumping and
@@ -361,7 +386,16 @@ namespace Catastrophe
 
             return velocityY;
         }
-
+        public void ShieldActivated(float timer)
+        {
+            powerUpTimer = timer;
+            isShieldOn = true;
+        }
+        public void SpeedActivated(float timer)
+        {
+            powerUpTimer = timer;
+            isSpeedOn = true;
+        }
         /// <summary>
         /// Detects and resolves all collisions between the player and his neighboring
         /// tiles. When a collision is detected, the player is pushed away along one
@@ -442,10 +476,6 @@ namespace Catastrophe
         {
             isAlive = false;
 
-            if (killedBy != null)
-                killedSound.Play();
-            else
-                fallSound.Play();
 
             sprite.PlayAnimation(dieAnimation);
         }
@@ -471,6 +501,12 @@ namespace Catastrophe
 
             // Draw that sprite.
             sprite.Draw(gameTime, spriteBatch, Position, flip);
+            
+            if (isShieldOn)
+            {
+                Vector2 origin = new Vector2(Shieldtexture.Width / 2.0f, Shieldtexture.Height / 2.0f);
+                spriteBatch.Draw(Shieldtexture, Position, null, GameInfo.Instance.ShieldInfo.Color, 0.0f, origin, GameInfo.Instance.ShieldInfo.Size, SpriteEffects.None, 0.0f);
+            }
         }
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/Backgrounds/Menu/Exit.png</SourceFile>
-  <SourceTime>2022-04-14T14:01:30.6386497+01:00</SourceTime>
+  <SourceTime>2022-05-13T23:32:50.2595257+01:00</SourceTime>
   <DestFile>D:/UNI/Term2/CompArch/Coursework/Platformer/Doggo/PlatformerMG/Content/bin/DesktopGL/Content/Backgrounds/Menu/Exit.xnb</DestFile>
-  <DestTime>2022-04-14T14:01:52.3678109+01:00</DestTime>
+  <DestTime>2022-05-13T23:33:40.4021124+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T17:17:54+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

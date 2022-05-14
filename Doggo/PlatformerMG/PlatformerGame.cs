@@ -14,10 +14,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input.Touch;
+using System.Text.Json;
 
 
 namespace Catastrophe
 {
+    
     /// <summary>
     /// This is the main type for your game
     /// </summary>
@@ -44,6 +46,7 @@ namespace Catastrophe
         private Texture2D loseOverlay;
         private Texture2D diedOverlay;
 
+        static public int GameScore =0;
         private Menu menu;
         private GameOver gameover;
 
@@ -69,16 +72,18 @@ namespace Catastrophe
         private const int numberOfLevels = 4;
 
         CommandManager commandManager;
+        SaveManager saveManager;
         public PlatformerGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            //commandManager = new CommandManager();
+            saveManager = new SaveManager();
 #if WINDOWS_PHONE
             graphics.IsFullScreen = true;
             TargetElapsedTime = TimeSpan.FromTicks(333333);
 #endif
-
+            saveManager.LoadSavedData();
+            levelIndex = SaveDataInfo.Instance.Level;
             Accelerometer.Initialize();
         }
 
@@ -125,7 +130,14 @@ namespace Catastrophe
 
             gameover = new GameOver(Services, GraphicsDevice);
         }
+        private void SaveData()
+        {
 
+        }
+        private void LoadData()
+        {
+
+        }
         private void InitializeKeyBindings()
         {
             commandManager = new CommandManager();
@@ -166,22 +178,29 @@ namespace Catastrophe
             switch (CurrentGameState)
             {
                 case GameState.Menu:
-                    if (menu.Update(gameTime))
-                        SwitchState(GameState.GamePlay);
-                    break;
+                    {
+                        menuSelected option = menu.Update(gameTime);
+                        if (option == menuSelected.Play)
+                            SwitchState(GameState.GamePlay);
+                        else if (option == menuSelected.Exit)
+                            Exit();
+                        break;
+                    }
                 case GameState.GamePlay:
                     // update our level, passing down the GameTime along with all of our input states
                     level.Update(gameTime, keyboardState, gamePadState, touchState,
                                  accelerometerState, Window.CurrentOrientation);
                     break;
                 case GameState.GameOver:
-                    gameover.Update(gameTime);
-                        //SwitchState(GameState.Menu);
+                    if (gameover.Update(gameTime))
+                    {
+                        levelIndex = -1;
+                        SwitchState(GameState.GamePlay);
+                    }
                     break;
                 default:
                     break;
             }
-
             base.Update(gameTime);
         }
 
@@ -204,6 +223,9 @@ namespace Catastrophe
                 keyboardState.IsKeyDown(Keys.Space) ||
                 gamePadState.IsButtonDown(Buttons.A) ||
                 touchState.AnyTouch();
+
+            if (keyboardState.IsKeyDown(Keys.O))
+                SwitchState(GameState.GameOver);
 
             // Perform the appropriate action to advance the game and
             // to get the player back to playing.
@@ -228,6 +250,21 @@ namespace Catastrophe
 
             wasContinuePressed = continuePressed;
         }
+        private void CheckHighScore()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (SaveDataInfo.Instance.highScores[i] <= GameScore)
+                {
+                    if (i != 4)
+                        SaveDataInfo.Instance.highScores[(i + 1)] = SaveDataInfo.Instance.highScores[i];
+
+                    SaveDataInfo.Instance.highScores[i] = GameScore;
+                    saveManager.SaveData();
+                    return;
+                }
+            }
+        }
 
         private void LoadNextLevel()
         {
@@ -241,7 +278,7 @@ namespace Catastrophe
             // Load the level.
             string levelPath = string.Format("Content/Levels/{0}.txt", levelIndex);
             using (Stream fileStream = TitleContainer.OpenStream(levelPath))
-                level = new Level(Services, fileStream, levelIndex);
+                level = new Level(Services, fileStream, levelIndex, GameScore);
 
             InitializeKeyBindings();
         }
@@ -270,6 +307,7 @@ namespace Catastrophe
             {
                 case GameState.Menu:
                     menu.Draw(GraphicsDevice.Viewport, spriteBatch);
+                    menu.DrawLeaderBoard(spriteBatch);
                     break;
                 case GameState.GamePlay:
                     level.Draw(gameTime, spriteBatch);
@@ -313,7 +351,7 @@ namespace Catastrophe
 
             // Draw score
             float timeHeight = hudFont.MeasureString(timeString).Y;
-            DrawShadowedString(hudFont, "SCORE: " + level.Score.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 1.2f), Color.Yellow);
+            DrawShadowedString(hudFont, "SCORE: " + GameScore.ToString(), hudLocation + new Vector2(0.0f, timeHeight * 1.2f), Color.Yellow);
            
             // Determine the status overlay message to show.
             Texture2D status = null;
@@ -344,9 +382,17 @@ namespace Catastrophe
         {
             if (buttonState == eButtonState.DOWN)
             {
+                SaveCurrentLevel();
+                CheckHighScore();
                 Exit();
             }
         }
+
+        private void SaveCurrentLevel()
+        {
+            //SaveDataInfo.Instance.Level = levelIndex --;
+        }
+
         private void DrawShadowedString(SpriteFont font, string value, Vector2 position, Color color)
         {
             spriteBatch.DrawString(font, value, position + new Vector2(1.0f, 1.0f), Color.Black);

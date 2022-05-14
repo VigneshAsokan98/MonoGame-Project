@@ -25,6 +25,9 @@ namespace Catastrophe
     /// <summary>
     /// A monster who is impeding the progress of our fearless adventurer.
     /// </summary>
+    public enum EnemyType {Cat, Dog};
+
+    public enum EnemyStates { Patrol, Chase, Idle}
     public class Enemy
     {
         public Level Level
@@ -32,10 +35,10 @@ namespace Catastrophe
             get { return level; }
         }
         Level level;
+        EnemyType type;
+        EnemyStates CurrentState = EnemyStates.Idle;
 
-        /// <summary>
-        /// Position in world space of the bottom center of this enemy.
-        /// </summary>
+
         public Vector2 Position
         {
             get { return position; }
@@ -60,6 +63,8 @@ namespace Catastrophe
         // Animations
         private Animation runAnimation;
         private Animation idleAnimation;
+        private Animation AttackAnimantion;
+        private Animation DeathAnimation;
         private AnimationPlayer sprite;
 
         /// <summary>
@@ -89,6 +94,10 @@ namespace Catastrophe
         {
             this.level = level;
             this.position = position;
+            if (spriteSet == "Dog")
+                type = EnemyType.Dog;
+            else
+                type = EnemyType.Cat;
 
             LoadContent(spriteSet);
         }
@@ -99,8 +108,10 @@ namespace Catastrophe
         public void LoadContent(string spriteSet)
         {
             // Load animations.
-            spriteSet = "Sprites/" + spriteSet + "/";
-            runAnimation = new Animation(Level.Content.Load<Texture2D>(spriteSet + "Run"), 0.1f, true);
+            spriteSet = "Sprites/Enemy/" + spriteSet + "/";
+            runAnimation = new Animation(Level.Content.Load<Texture2D>(spriteSet + "Walk"), 0.1f, true);
+            idleAnimation = new Animation(Level.Content.Load<Texture2D>(spriteSet + "Idle"), 0.15f, true);
+            DeathAnimation = new Animation(Level.Content.Load<Texture2D>(spriteSet + "Death"), 0.15f, true);
             idleAnimation = new Animation(Level.Content.Load<Texture2D>(spriteSet + "Idle"), 0.15f, true);
             sprite.PlayAnimation(idleAnimation);
 
@@ -116,8 +127,26 @@ namespace Catastrophe
         /// <summary>
         /// Paces back and forth along a platform, waiting at either end.
         /// </summary>
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Player player)
         {
+            if (type == EnemyType.Dog && Vector2.Distance(player.Position, position) < 150)
+                switchState(EnemyStates.Chase);            
+            else
+                switchState(EnemyStates.Idle);
+            if (CurrentState == EnemyStates.Chase && type == EnemyType.Dog)
+            {
+                UpdateMovement(gameTime);
+                return;
+            }
+            //if (type == EnemyType.Cat)
+            //{
+            //    UpdateMovement(gameTime);
+            //}
+        }
+
+        private void UpdateMovement(GameTime gameTime)
+        {
+
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Calculate tile position based on the side we are walking towards.
@@ -145,11 +174,23 @@ namespace Catastrophe
                 }
                 else
                 {
+                    Vector2 velocity;
                     // Move in the current direction.
-                    Vector2 velocity = new Vector2((int)direction * GameInfo.Instance.EnemyInfo.Speed * elapsed, 0.0f);
+                    if (type == EnemyType.Cat)
+                        velocity = new Vector2((int)direction * GameInfo.Instance.EnemyInfo.CatSpeed * elapsed, 0.0f);
+                    else
+                        velocity = new Vector2((int)direction * GameInfo.Instance.EnemyInfo.DogSpeed * elapsed, 0.0f);
+
                     position = position + velocity;
                 }
             }
+        }
+    
+
+        private void switchState(EnemyStates State)
+        {
+            if (CurrentState != State)
+                CurrentState = State;
         }
 
         /// <summary>
@@ -167,12 +208,26 @@ namespace Catastrophe
             }
             else
             {
-                sprite.PlayAnimation(runAnimation);
+                switch (CurrentState)
+                {
+                    case EnemyStates.Patrol:
+                        sprite.PlayAnimation(runAnimation);
+                        break;
+                    case EnemyStates.Chase:
+                        sprite.PlayAnimation(runAnimation);
+                        break;
+                    case EnemyStates.Idle:
+                        sprite.PlayAnimation(idleAnimation);
+                        break;
+                    default:
+                        break;
+                }
+                
             }
 
 
             // Draw facing the way the enemy is moving.
-            SpriteEffects flip = direction > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects flip = direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             sprite.Draw(gameTime, spriteBatch, Position, flip);
         }
     }

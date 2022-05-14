@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Catastrophe
 {
+    public enum menuSelected { Play, Exit, none}
+
     class Menu 
     {
         ContentManager content;
@@ -28,17 +30,33 @@ namespace Catastrophe
             Device = device;
         }
 
-        public bool Update(GameTime gametime)
+        public menuSelected Update(GameTime gametime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up))
                 isPlaySelected = true;
             if (Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.Down))
                 isPlaySelected = false;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && isPlaySelected)
-                return true;
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                if (isPlaySelected)
+                    return menuSelected.Play; 
+                else
+                    return menuSelected.Exit;
 
-            return false;
+            return menuSelected.none ;
+        }
+
+        public void DrawLeaderBoard(SpriteBatch spriteBatch)
+        {
+            Vector2 boardPosition = new Vector2(500, 80);
+            DrawShadowedString(MenuFont, "Leader Board: ", boardPosition, Color.Yellow, spriteBatch);
+            for (int i = 0; i < 5; i++)
+            {
+                DrawShadowedString(MenuFont, "HighScore " + i.ToString() + ": " + SaveDataInfo.Instance.highScores[i],
+                    boardPosition + new Vector2(10.0f, i * 25f + 30), Color.Yellow, spriteBatch);
+               
+            }
+
         }
 
         public void Draw(Viewport viewport, SpriteBatch spriteBatch)

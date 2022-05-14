@@ -41,8 +41,10 @@ namespace Catastrophe
         }
         Player player;
 
-        private List<Gem> gems = new List<Gem>();
+        private List<Fish> gems = new List<Fish>();
         private List<Enemy> enemies = new List<Enemy>();
+
+        private List<PowerUp> powerUps = new List<PowerUp>();
 
         // Key locations in the level.        
         private Vector2 start;
@@ -52,11 +54,11 @@ namespace Catastrophe
         // Level game state.
         private Random random = new Random(354668); // Arbitrary, but constant seed
 
-        public int Score
+        public int LevelScore
         {
-            get { return score; }
+            get { return Levelscore; }
         }
-        int score;
+        int Levelscore;
 
         public bool ReachedExit
         {
@@ -81,6 +83,7 @@ namespace Catastrophe
 
         private SoundEffect exitReachedSound;
 
+        ScoreManager scoreManager;
         #region Loading
 
         /// <summary>
@@ -92,11 +95,11 @@ namespace Catastrophe
         /// <param name="fileStream">
         /// A stream containing the tile data.
         /// </param>
-        public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex)
+        public Level(IServiceProvider serviceProvider, Stream fileStream, int levelIndex, int Prevscore = 0)
         {
             // Create a new content manager to load content used just by this level.
             content = new ContentManager(serviceProvider, "Content");
-
+            scoreManager = new ScoreManager();
             loader = new Loader(fileStream);
             //loader.ReadTextFileComplete();
 
@@ -115,7 +118,8 @@ namespace Catastrophe
                 int segmentIndex = levelIndex;
                 layers[i] = Content.Load<Texture2D>("Backgrounds/"+ segmentIndex +"/Layer" + i + "_" + segmentIndex);
             }
-
+            
+            Levelscore = Prevscore;
             // Load sounds.
             //exitReachedSound = Content.Load<SoundEffect>("Sounds/ExitReached");
         }
@@ -184,7 +188,12 @@ namespace Catastrophe
                 // Exit
                 case 'X':
                     return LoadExitTile(x, y);
-
+                
+                //Load Enemy
+                case 'D':
+                    return LoadEnemyTile(x, y, "Dog");
+                case 'C':
+                    return LoadEnemyTile(x, y, "Cat");
                 // Gem
                 case 'G':
                     return LoadGemTile(x, y);
@@ -193,6 +202,11 @@ namespace Catastrophe
                 case '-':
                     return LoadTile("Platform", TileCollision.Platform);
 
+                //PowerUp 
+                case 'S':
+                    return LoadPowerUp(x, y, "Shield");
+                case 'F':
+                    return LoadPowerUp(x, y, "Speed");
 
                 // Platform block
                 case '~':
@@ -214,6 +228,17 @@ namespace Catastrophe
                 default:
                     throw new NotSupportedException(String.Format("Unsupported tile type character '{0}' at position {1}, {2}.", tileType, x, y));
             }
+        }
+
+        private Tile LoadPowerUp(int x, int y, string v)
+        {
+            Point position = GetBounds(x, y).Center;
+            if(v == "Shield")
+                powerUps.Add(new Shield(new Vector2(position.X, position.Y), Content.Load<Texture2D>("Sprites/award")));
+            else if(v == "Speed")
+                powerUps.Add(new SpeedPowerUp(new Vector2(position.X, position.Y), Content.Load<Texture2D>("Sprites/milk")));
+
+            return new Tile(null, TileCollision.Passable);
         }
 
         /// <summary>
@@ -260,6 +285,8 @@ namespace Catastrophe
 
             start = RectangleExtensions.GetBottomCenter(GetBounds(x, y));
             player = new Player(this, start);
+            scoreManager.AddPowerUP(powerUpType.shield, player.ShieldActivated);
+            scoreManager.AddPowerUP(powerUpType.speed, player.SpeedActivated);
 
             return new Tile(null, TileCollision.Passable);
         }
@@ -294,7 +321,7 @@ namespace Catastrophe
         private Tile LoadGemTile(int x, int y)
         {
             Point position = GetBounds(x, y).Center;
-            gems.Add(new Gem(this, new Vector2(position.X, position.Y)));
+            gems.Add(new Fish(this, new Vector2(position.X, position.Y)));
 
             return new Tile(null, TileCollision.Passable);
         }
@@ -381,14 +408,15 @@ namespace Catastrophe
                 int seconds = (int)Math.Round(gameTime.ElapsedGameTime.TotalSeconds * 100.0f);
                 seconds = Math.Min(seconds, (int)Math.Ceiling(TimeRemaining.TotalSeconds));
                 timeRemaining -= TimeSpan.FromSeconds(seconds);
-                score += seconds * PointsPerSecond;
+                ScoreEventArgs args = new ScoreEventArgs { value = seconds * PointsPerSecond};
+                scoreManager.addScore(args);
             }
             else
             {
                 timeRemaining -= gameTime.ElapsedGameTime;
                 Player.Update(gameTime, keyboardState, gamePadState, touchState, accelState, orientation);
                 UpdateGems(gameTime);
-
+                UpdatePowerUps(gameTime);
                 // Falling off the bottom of the level kills the player.
                 if (Player.BoundingRectangle.Top >= Height * Tile.Height)
                     OnPlayerKilled(null);
@@ -405,10 +433,33 @@ namespace Catastrophe
                     OnExitReached();
                 }
             }
-
             // Clamp the time remaining at zero.
             if (timeRemaining < TimeSpan.Zero)
                 timeRemaining = TimeSpan.Zero;
+        }
+
+        private void UpdatePowerUps(GameTime gameTime)
+        {
+            for (int i = 0; i < powerUps.Count; ++i)
+            {
+                PowerUp power = powerUps[i];
+
+                power.Update(gameTime);
+
+                if (power.BoundingCircle.Intersects(Player.BoundingRectangle))
+                {
+                    OnPowerUpCollected(power, Player);
+                    powerUps.RemoveAt(i--);
+                }
+            }
+        }
+
+        private void OnPowerUpCollected(PowerUp power, Player player)
+        {
+            if(power.type == powerUpType.shield)
+                scoreManager.OnPowerUpCollected(new ScoreEventArgs { value = 5, type = power.type, timer = GameInfo.Instance.ShieldInfo.timer});
+            if(power.type == powerUpType.speed)
+                scoreManager.OnPowerUpCollected(new ScoreEventArgs { value = 5, type = power.type, timer = GameInfo.Instance.SpeedInfo.timer});
         }
 
         /// <summary>
@@ -418,14 +469,14 @@ namespace Catastrophe
         {
             for (int i = 0; i < gems.Count; ++i)
             {
-                Gem gem = gems[i];
+                Fish gem = gems[i];
 
                 gem.Update(gameTime);
 
                 if (gem.BoundingCircle.Intersects(Player.BoundingRectangle))
                 {
                     gems.RemoveAt(i--);
-                    OnGemCollected(gem, Player);
+                    OnFishCollected(gem, Player);
                 }
             }
         }
@@ -437,10 +488,10 @@ namespace Catastrophe
         {
             foreach (Enemy enemy in enemies)
             {
-                enemy.Update(gameTime);
+                enemy.Update(gameTime, player);
 
                 // Touching an enemy instantly kills the player
-                if (enemy.BoundingRectangle.Intersects(Player.BoundingRectangle))
+                if (enemy.BoundingRectangle.Intersects(Player.BoundingRectangle) && !player._IsShieldOn)
                 {
                     OnPlayerKilled(enemy);
                 }
@@ -450,13 +501,15 @@ namespace Catastrophe
         /// <summary>
         /// Called when a gem is collected.
         /// </summary>
-        /// <param name="gem">The gem that was collected.</param>
+        /// <param name="fish">The gem that was collected.</param>
         /// <param name="collectedBy">The player who collected this gem.</param>
-        private void OnGemCollected(Gem gem, Player collectedBy)
+        private void OnFishCollected(Fish fish, Player collectedBy)
         {
-            score += Gem.PointValue;
+            ScoreEventArgs args = new ScoreEventArgs { value = 10};
+            scoreManager.addScore(args);
+            //Levelscore += fish.score;
 
-            gem.OnCollected(collectedBy);
+            fish.OnCollected(collectedBy); 
         }
 
         /// <summary>
@@ -503,8 +556,11 @@ namespace Catastrophe
 
             DrawTiles(spriteBatch);
 
-            foreach (Gem gem in gems)
+            foreach (Fish gem in gems)
                 gem.Draw(gameTime, spriteBatch);
+
+            foreach (PowerUp powerUp in powerUps)
+                powerUp.Draw(spriteBatch);
 
             Player.Draw(gameTime, spriteBatch);
 

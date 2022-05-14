@@ -28,7 +28,7 @@ namespace Catastrophe
 
         public bool Update(GameTime gametime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            if (Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 return true;
             }
@@ -44,7 +44,7 @@ namespace Catastrophe
             Vector2 center = new Vector2(titleSafeArea.X + titleSafeArea.Width / 5.0f,
                                          titleSafeArea.Y + titleSafeArea.Height / 2.0f - 10);
 
-            //DrawShadowedString(MenuFont, "GAME OVER", center, Color.Orange, spriteBatch);
+            DrawShadowedString(MenuFont, "Press R To Restart", new Vector2(center.X,center.Y + 50), Color.Orange, spriteBatch);
 
         }
 

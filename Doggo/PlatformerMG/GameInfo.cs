@@ -7,20 +7,37 @@ using Microsoft.Xna.Framework;
 
 namespace Catastrophe
 {
+    
     public class EnemyInfo
     {
-        public float Speed = 0.0f;
+        public bool isEnemyStatic;
+        public float CatSpeed = 0.0f;
+        public float DogSpeed = 0.0f;
+        public int KillScore;
     }
 
-    public class GemInfo
+    public class FishInfo
     {
         public string Texture;
         public float BounceHeight = 0.0f;
         public float BounceRate = 0.0f;
         public Color Color;
+        public int Score;
         public float Size;
     }
-
+    public class ShieldInfo
+    {
+        public float timer;
+        public Color Color;
+        public float Size;
+    }
+    public class SpeedPowerUpInfo
+    {
+        public float timer;
+        public int speed;
+        public Color Color;
+        public float Size;
+    }
     public class GameInfo
     {
         private static GameInfo mInstance = null;
@@ -37,6 +54,8 @@ namespace Catastrophe
         }
 
         public EnemyInfo EnemyInfo;
-        public GemInfo gemInfo;
+        public FishInfo fishInfo;
+        public SpeedPowerUpInfo SpeedInfo;
+        public ShieldInfo ShieldInfo;
     }
 }

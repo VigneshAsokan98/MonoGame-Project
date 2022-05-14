@@ -2,12 +2,14 @@
 <GameInfo>
   <EnemyInfo>
     <Speed>300</Speed>    
+    <KillScore>25</KillScore>
   </EnemyInfo> 
 
-  <GemInfo>
+  <fishInfo>
+    <Texture>Sprites/fish</Texture>
     <BounceHeight>0.18</BounceHeight>
     <BounceRate>3.0</BounceRate>
-    <Size>0.5</Size>
+    <Size>0.75</Size>
     <Score>10</Score>
     <Color>
       <R>255</R>
@@ -15,6 +17,27 @@
       <B>255</B>
       <A>255</A>
     </Color>
-  </GemInfo>
+  </fishInfo>
   
+  <SpeedInfo>
+    <Size>0.75</Size>
+    <timer>5</timer>
+    <Color>
+      <R>255</R>
+      <G>255</G>
+      <B>255</B>
+      <A>255</A>
+    </Color>
+  </SpeedInfo>
+
+  <ShieldInfo>
+    <Size>0.75</Size>
+    <timer>5</timer>
+    <Color>
+      <R>255</R>
+      <G>255</G>
+      <B>255</B>
+      <A>255</A>
+    </Color>
+  </ShieldInfo>
 </GameInfo>

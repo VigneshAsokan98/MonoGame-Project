@@ -158,3 +158,14 @@ D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcore
 D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Backgrounds\Menu\Exit.xnb
 D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Backgrounds\Menu\Play.xnb
 D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\milk.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\SaveData.xml
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Shield.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\award.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Cat\Attack.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Cat\Death.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Cat\Idle.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Cat\Walk.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Dog\Attack.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Dog\Death.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Dog\Idle.xnb
+D:\UNI\Term2\CompArch\Coursework\Platformer\Doggo\PlatformerMG\bin\Debug\netcoreapp3.1\Content\Sprites\Enemy\Dog\Walk.xnb
